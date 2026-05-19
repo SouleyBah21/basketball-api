@@ -17,5 +17,17 @@ def get_player(player_id:int):
     if not player:
         raise HTTPException(status_code = 404, detail = "Player not found")
     return player
+
+@router.delete("/players/{player_id}")
+def delete_player(player_id:int):
+    cursor.execute("DELETE FROM PLAYERS WHERE ID = %s",(player_id,))
+    conn.commit()
+    if cursor.rowcount==0:
+        raise HTTPException(status = 404, 
+                            detail="Player not found!")
+    else:
+        return {"message":"Player successfully deleted"}
+    
+
     
 
