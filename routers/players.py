@@ -23,7 +23,7 @@ def delete_player(player_id:int):
     cursor.execute("DELETE FROM PLAYERS WHERE ID = %s",(player_id,))
     conn.commit()
     if cursor.rowcount==0:
-        raise HTTPException(status = 404, 
+        raise HTTPException(status_code = 404, 
                             detail="Player not found!")
     else:
         return {"message":"Player successfully deleted"}
@@ -35,7 +35,7 @@ def get_players():
     return players
 @router.patch("/players/{player_id}")
 def update_player(player_id:int,updated_player:PlayerUpdate):
-    updated_data = update_player.model_dump(exclude_unset=True)
+    updated_data = updated_player.model_dump(exclude_unset=True)
     if not updated_data:
         raise HTTPException(status_code = 404,detail="No fields provided!")
     set_clause = ", ".join([f"{field} = %s" for field in updated_data.keys()])
