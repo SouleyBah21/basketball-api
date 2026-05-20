@@ -53,6 +53,15 @@ def update_player(player_id:int,updated_player:PlayerUpdate):
         raise HTTPException(status_code=404, detail="Player not found")
 
     return {"message": "Player updated"}
+@router.put("/players/{player_id}")
+def replace_player(player_id:int,updated_player:PlayerUpdate):
+    cursor.execute("UPDATE PLAYERS  SET name = %s,position = %s, team = %s WHERE ID = %s",(updated_player.name,updated_player.position,updated_player.team,player_id,))
+    conn.commit()
+    if cursor.rowcount==0:
+        raise HTTPException(status_code = 404, detail = "Player not found")
+    return{"message":"Player replaced"}
+
+
 
     
     
