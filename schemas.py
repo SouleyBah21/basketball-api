@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 from datetime import date
 
 class PlayerCreate(BaseModel):
@@ -13,3 +14,8 @@ class StatCreate(BaseModel):
     rebounds:int
     assists:int
     game_date:date
+
+class PlayerUpdate(BaseModel):
+    name:Optional[str] = None
+    position:Optional[str] = None
+    team:Optional[str] = None

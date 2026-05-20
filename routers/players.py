@@ -1,5 +1,5 @@
 from fastapi import APIRouter,HTTPException
-from schemas import PlayerCreate
+from schemas import PlayerCreate,PlayerUpdate
 from database import conn,cursor
 
 router = APIRouter()
@@ -27,6 +27,37 @@ def delete_player(player_id:int):
                             detail="Player not found!")
     else:
         return {"message":"Player successfully deleted"}
+    
+@router.get("/players")
+def get_players():
+    cursor.execute("SELECT * FROM PLAYERS")
+    players = cursor.fetchall()
+    return players
+@router.patch("/players/{player_id}")
+def update_player(player_id:int,updated_player:PlayerUpdate):
+    updated_data = update_player.model_dump(exclude_unset=True)
+    if not updated_data:
+        raise HTTPException(status_code = 404,detail="No fields provided!")
+    set_clause = ", ".join([f"{field} = %s" for field in updated_data.keys()])
+    values = list(updated_data.values())
+    values.append(player_id)
+
+    cursor.execute(
+        f"UPDATE players SET {set_clause} WHERE id = %s",
+        values
+    )
+
+    conn.commit()
+
+    if cursor.rowcount == 0:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    return {"message": "Player updated"}
+
+    
+    
+    
+
     
 
     
